@@ -1,28 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const TodoList = () => {
-  return (
-    <ul>
-      <li>Do nothing</li>
-      <li>Sleep</li>
-    </ul>
-  );
-}
-
-const Header = () => {
-  return <h1>WOODOO list</h1>;
-}
-
-const Search = () => {
-  return <input placeholder="search"/>;
-}
+import Header from './components/header'
+import SearchBar from './components/search-bar'
+import TodoList from './components/todo-list'
 
 const App = () => {
   return (
     <div>
       <Header />
-      <Search />
+      <SearchBar />
       <TodoList />
     </div>
   );
