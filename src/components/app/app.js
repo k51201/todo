@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 import Header from '../header'
 import SearchBar from '../search-bar'
 import StatusFilter from '../status-filter'
 import TodoList from '../todo-list'
+import AddItemForm from '../add-item-form/add-item-form'
 
 import './app.css'
 
@@ -22,6 +23,21 @@ export default class App extends Component {
     })
   }
 
+  addItem = label => {
+    this.setState(({ data }) => {
+      const id = this.generateNewId(data)
+      const newItem = { id, label, important: false }
+      return { data: [...data, newItem] }
+    })
+  }
+
+  generateNewId(data) {
+    const ids = data.map(({ id }) => id)
+    ids.push(0)
+    const maxId = ids.reduce((max, i) => (i > max ? i : max))
+    return maxId + 1
+  }
+
   render() {
     const { data } = this.state
 
@@ -33,6 +49,7 @@ export default class App extends Component {
           <StatusFilter />
         </div>
         <TodoList data={data} onRemoveItem={this.removeItem} />
+        <AddItemForm onAddItem={this.addItem} />
       </div>
     )
   }
