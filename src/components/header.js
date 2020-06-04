@@ -1,7 +1,14 @@
 import React from 'react'
 
-const Header = () => {
-    return <h1>WOODOO list</h1>
+import './header.css'
+
+const Header = ({ toDo, done }) => {
+    return (
+        <div className="header d-flex">
+            <h1>Seznam TODO</h1>
+            <h2>Máte udělat:  {toDo}, splněné: {done}</h2>
+        </div>
+    )
 }
 
 export default Header
