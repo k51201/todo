@@ -77,10 +77,10 @@ export default class App extends Component {
 
   visibilityPredicate = ({ label, done }) => {
     const { searchQuery, filter } = this.state
-    return label.startsWith(searchQuery) && (
+    return (label.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1) && (
+      (filter === 'all') ||
       (done && filter === 'done') ||
-      (!done && filter === 'active') ||
-      (filter === 'all')
+      (!done && filter === 'active')
     )
   }
 
