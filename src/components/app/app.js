@@ -11,10 +11,14 @@ import './app.css'
 export default class App extends Component {
   state = {
     data: [
-      { id: 1, label: 'Nic nedělat', important: true },
-      { id: 2, label: 'Jíst', important: false },
-      { id: 3, label: 'Spát', important: false },
+      this.createItem(1, 'Nic nedělat'),
+      this.createItem(2, 'Jíst'),
+      this.createItem(3, 'Spát'),
     ]
+  }
+
+  createItem(id, label) {
+    return { id, label, important: false, done: false }
   }
 
   removeItem = (id) => {
@@ -26,8 +30,7 @@ export default class App extends Component {
   addItem = label => {
     this.setState(({ data }) => {
       const id = this.generateNewId(data)
-      const newItem = { id, label, important: false }
-      return { data: [...data, newItem] }
+      return { data: [...data, this.createItem(id, label)] }
     })
   }
 
@@ -36,6 +39,30 @@ export default class App extends Component {
     ids.push(0)
     const maxId = ids.reduce((max, i) => (i > max ? i : max))
     return maxId + 1
+  }
+
+  toggleImportant = id => {
+    this.modifyElement(id, item => {
+      return { ...item, important: !item.important }
+    })
+  }
+
+  toggleDone = id => {
+    this.modifyElement(id, item => {
+      return { ...item, done: !item.done }
+    })
+  }
+
+  modifyElement = (id, f = (i => i)) => {
+    this.setState(({ data }) => {
+      const newData = data.map(item => {
+        if (item.id === id)
+          return f(item)
+        else
+          return item
+      })
+      return { data: newData }
+    })
   }
 
   render() {
@@ -48,7 +75,12 @@ export default class App extends Component {
           <SearchBar />
           <StatusFilter />
         </div>
-        <TodoList data={data} onRemoveItem={this.removeItem} />
+        <TodoList
+          data={data}
+          removeItem={this.removeItem}
+          toggleImportant={this.toggleImportant}
+          toggleDone={this.toggleDone}
+        />
         <AddItemForm onAddItem={this.addItem} />
       </div>
     )
