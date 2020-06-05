@@ -77,15 +77,18 @@ export default class App extends Component {
 
   visibilityPredicate = ({ label, done }) => {
     const { searchQuery, filter } = this.state
-    return (label.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1) && (
-      (filter === 'all') ||
-      (done && filter === 'done') ||
-      (!done && filter === 'active')
-    )
+
+    const applyQuery = (label) => label.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
+
+    switch(filter) {
+      case 'active': return !done && applyQuery(label)
+      case 'done': return done && applyQuery(label)
+      default: return applyQuery(label)
+    }
   }
 
   render() {
-    const { data } = this.state
+    const { data, filter } = this.state
     const doneCount = data.filter(i => i.done).length
     const toDoCount = data.length - doneCount
     const visibleData = data.filter(this.visibilityPredicate)
@@ -95,7 +98,7 @@ export default class App extends Component {
         <Header toDo={toDoCount} done={doneCount} />
         <div className="top-panel d-flex">
           <SearchBar onSearch={this.search} />
-          <StatusFilter changeFilter={this.changeFilter} />
+          <StatusFilter selected={filter} changeFilter={this.changeFilter} />
         </div>
         <TodoList
           data={visibleData}
