@@ -15,7 +15,8 @@ export default class App extends Component {
       this.createItem(2, 'Jíst'),
       this.createItem(3, 'Spát'),
     ],
-    searchQuery: ''
+    searchQuery: '',
+    filter: 'all',
   }
 
   createItem(id, label) {
@@ -67,21 +68,34 @@ export default class App extends Component {
   }
 
   search = searchQuery => {
-    this.setState({searchQuery})
+    this.setState({ searchQuery })
+  }
+
+  changeFilter = filter => {
+    this.setState({ filter })
+  }
+
+  visibilityPredicate = ({ label, done }) => {
+    const { searchQuery, filter } = this.state
+    return label.startsWith(searchQuery) && (
+      (done && filter === 'done') ||
+      (!done && filter === 'active') ||
+      (filter === 'all')
+    )
   }
 
   render() {
-    const { data, searchQuery } = this.state
+    const { data } = this.state
     const doneCount = data.filter(i => i.done).length
     const toDoCount = data.length - doneCount
-    const visibleData = data.filter(i => i.label.startsWith(searchQuery))
+    const visibleData = data.filter(this.visibilityPredicate)
 
     return (
       <div className="todo-app" >
         <Header toDo={toDoCount} done={doneCount} />
         <div className="top-panel d-flex">
           <SearchBar onSearch={this.search} />
-          <StatusFilter />
+          <StatusFilter changeFilter={this.changeFilter} />
         </div>
         <TodoList
           data={visibleData}
